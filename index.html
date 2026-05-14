@@ -1769,61 +1769,53 @@
             box-sizing: border-box;
         }
 
-        /* --- Optimised flow additions --- */
-        .prefill-badge {
-            display: inline-flex;
+        /* --- Sourced-data callout & review card (Barclays pattern) --- */
+        .info-callout {
+            display: flex;
             align-items: flex-start;
-            gap: 6px;
-            background: #EAF6EC;
-            color: #1B6E2E;
-            font-size: 12px;
-            font-weight: 600;
-            line-height: 1.35;
-            padding: 6px 10px;
-            border-radius: 6px;
-            margin: 2px 0 10px;
+            gap: 12px;
+            background: #eaf2fc;
+            border: 1.5px solid #006de3;
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin: 2px 0 16px;
+            width: 100%;
+            box-sizing: border-box;
         }
-        .prefill-tick {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 15px; height: 15px;
-            background: #1B8A3A;
+        .info-callout-icon {
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            background: #006de3;
             color: #ffffff;
             border-radius: 50%;
-            font-size: 10px; font-weight: 700;
-            flex-shrink: 0;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
         }
-        .verified-card {
-            background: #EAF6EC;
-            border: 1px solid #BCE3C2;
-            border-radius: 10px;
-            padding: 14px;
+        .info-callout-text {
+            font-size: 15px;
+            color: #272727;
+            line-height: 21px;
+            font-family: 'Barclays Effra', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        }
+        .kyb-review-card {
+            background: #ffffff;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
             margin-bottom: 16px;
+            overflow: hidden;
         }
-        .verified-card-head {
-            display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+        .kyb-review-row {
+            padding: 14px 16px;
         }
-        .verified-tick {
-            display: inline-flex; align-items: center; justify-content: center;
-            width: 20px; height: 20px;
-            background: #1B8A3A; color: #ffffff;
-            border-radius: 50%;
-            font-size: 12px; font-weight: 700; flex-shrink: 0;
+        .kyb-review-row + .kyb-review-row {
+            border-top: 1px solid #ededed;
         }
-        .verified-source {
-            font-size: 12px; font-weight: 700; color: #1B6E2E;
-            text-transform: uppercase; letter-spacing: 0.4px;
-        }
-        .verified-note {
-            font-size: 13px; color: #2b2b2b; line-height: 1.45; margin-bottom: 2px;
-        }
-        .verified-items { display: flex; flex-direction: column; gap: 8px; }
-        .verified-item {
-            display: flex; justify-content: space-between; gap: 12px; font-size: 13px;
-        }
-        .verified-item-label { color: #5b5b5b; flex-shrink: 0; }
-        .verified-item-value { color: #1a1a1a; font-weight: 600; text-align: right; }
 
         /* --- Validation / error handling --- */
         .field-error {
@@ -2624,7 +2616,7 @@
             if (question.type !== 'document-upload') {
                 html += `<label class="question-label">${question.label}</label>`;
                 if (question.hint) html += `<div class="hint-text">${question.hint}</div>`;
-                if (question.prefilled) html += `<div class="prefill-badge"><span class="prefill-tick">\u2713</span> Pre-filled from ${question.prefillSource} - please check it's correct</div>`;
+                if (question.prefilled) html += `<div class="info-callout"><span class="info-callout-icon">i</span><span class="info-callout-text">We've pre-filled this from ${question.prefillSource}. Please check it's correct.</span></div>`;
             }
 
             // Input based on type
@@ -2758,22 +2750,16 @@
                     });
                 }
             } else if (question.type === 'verified-info') {
-                html += `<div class="verified-card">
-                    <div class="verified-card-head">
-                        <span class="verified-tick">\u2713</span>
-                        <span class="verified-source">Confirmed via ${question.verifiedSource}</span>
-                    </div>`;
-                if (question.verifiedNote) {
-                    html += `<div class="verified-note">${question.verifiedNote}</div>`;
-                }
+                const vSrc = question.verifiedSource || 'our records';
+                const vMsg = question.verifiedNote || ("We've found this information on " + vSrc + ". If this isn't right, please update it.");
+                html += `<div class="info-callout"><span class="info-callout-icon">i</span><span class="info-callout-text">${vMsg}</span></div>`;
                 if (question.verifiedItems) {
-                    html += `<div class="verified-items">`;
+                    html += `<div class="kyb-review-card">`;
                     question.verifiedItems.forEach(it => {
-                        html += `<div class="verified-item"><span class="verified-item-label">${it.label}</span><span class="verified-item-value">${it.value}</span></div>`;
+                        html += `<div class="kyb-review-row"><div class="review-card-label">${it.label}</div><div class="review-card-value">${it.value}</div></div>`;
                     });
                     html += `</div>`;
                 }
-                html += `</div>`;
             } else if (question.type === 'document-upload') {
                 html += `<div class="document-upload-container">`;
 
